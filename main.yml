@@ -2,6 +2,7 @@
      hosts: all
      remote_user: root
      become: yes
+     gather_facts: no
 
      tasks:
      - name: copie du script sur serveur cible
@@ -14,6 +15,7 @@
      - name: Ajout de la ligne bashrc pour creation alias
        lineinfile :
          path: /home/cheops/.bashrc
+         create: yes
          backup: yes
          line: 'alias ntp_restore="sudo /home/adm-cheops/ntp.sh"'
          state: present
@@ -23,7 +25,7 @@
        lineinfile :
          path: /etc/sudoers
          backup: yes
-         regexp: ‘^wheel’
+         insertafter: "^cheops"
          line: 'cheops  ALL= NOPASSWD:/home/adm-cheops/ntp.sh'
          state: present
          validate: '/usr/sbin/visudo -cf %s'
