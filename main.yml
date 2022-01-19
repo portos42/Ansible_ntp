@@ -8,7 +8,6 @@
        copy:
            src: script/ntp.sh
            dest: /home/adm-cheops/ntp.sh
-           dest: /home/cheops/ntp.sh
            mode: "0755"
 
 ##cheops
