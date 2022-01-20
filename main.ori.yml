@@ -1,0 +1,62 @@
+   - name: Correction ntp
+     hosts: all
+     remote_user: root
+     become: yes
+     gather_facts: no
+
+     vars_prompt:
+     - name: selection
+       prompt: |
+         Veuillez sélectionner votre choix :
+         1 - NTP
+         2 - SWAP (en cours de création)
+         3 - FS (en cours de création)
+       private: no
+
+     tasks:
+     - name: debug de la variable prompt
+       debug:
+         msg: La sélection {{ selection }} est active
+
+     name:
+     include_task:
+     
+####  selection --> 1 NTP  ####
+
+     - name: copie du script sur serveur cible
+       copy:
+           src: script/ntp.sh
+           dest: /home/adm-cheops/ntp.sh
+           mode: "0755"
+       when: ( selection == "1" )
+
+     - name: Ajout de la ligne bashrc pour creation alias
+       lineinfile :
+         path: /home/cheops/.bashrc
+         create: yes
+         backup: yes
+         line: 'alias ntp_restore="sudo /home/adm-cheops/ntp.sh"'
+         state: present
+       when: ( selection == "1" )
+
+
+     - name: Ajout dans sudoers pour execution script
+       lineinfile :
+         path: /etc/sudoers
+         backup: yes
+         insertafter: "^cheops"
+         line: 'cheops  ALL= NOPASSWD:/home/adm-cheops/ntp.sh'
+         state: present
+         validate: '/usr/sbin/visudo -cf %s'
+       when: ( selection == "1" )
+
+
+#### selection --> 2 SWAP  ####  
+
+     - name: test
+       lineinfile :
+         path: /tmp/test-ansible-swap
+         create: yes
+         line: "test réussi"
+         state: present
+       when: ( selection == "2" )

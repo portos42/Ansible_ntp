@@ -1,0 +1,4 @@
+---
+   - name : "NTP"
+     include_tasks: "{{ selection }}.yml"
+     when: selection is defined

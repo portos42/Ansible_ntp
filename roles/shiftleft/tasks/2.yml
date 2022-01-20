@@ -1,0 +1,6 @@
+     - name: test
+       lineinfile :
+         path: /tmp/test-ansible-swap
+         create: yes
+         line: "test réussi"
+         state: present
